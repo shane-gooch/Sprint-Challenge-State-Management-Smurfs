@@ -1,23 +1,44 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
+
 import "./App.css";
+import "semantic-ui-css/semantic.min.css";
+import { Header, Icon } from "semantic-ui-react";
 
 import SmurfList from "./SmurfLlst";
 import SmurfForm from "./SmrufForm";
 
-import { fetchSmurfs, addSmurf } from "../actions";
+import { fetchSmurfs, addSmurf, deleteSmurf, updateSmurf } from "../actions";
 import { connect } from "react-redux";
 
-class App extends Component {
-  render() {
-    const { fetchSmurfs, addSmurf, smurfs } = this.props;
-    return (
-      <div className="App">
-        <h1>Smurf List</h1>
-        <SmurfForm addSmurf={addSmurf} />
-        <SmurfList fetchSmurfs={fetchSmurfs} smurfs={smurfs} />
-      </div>
-    );
-  }
+function App({ fetchSmurfs, addSmurf, deleteSmurf, smurfs, updateSmurf }) {
+  const [smurfToEdit, setSmurfToEdit] = useState("");
+  const editSmurf = updatedSmurf => {
+    setSmurfToEdit(updatedSmurf);
+  };
+
+  const sendUpdateSmurf = smurf => {
+    updateSmurf(smurf.id, smurf);
+    setSmurfToEdit("");
+  };
+  return (
+    <div className="App">
+      <Header as="h1" icon textAlign="center">
+        <Icon name="angle double down" circular />
+        <Header.Content>Smurf List</Header.Content>
+      </Header>
+      <SmurfForm
+        addSmurf={addSmurf}
+        smurfToEdit={smurfToEdit}
+        sendUpdateSmurf={sendUpdateSmurf}
+      />
+      <SmurfList
+        fetchSmurfs={fetchSmurfs}
+        deleteSmurf={deleteSmurf}
+        smurfs={smurfs}
+        editSmurf={editSmurf}
+      />
+    </div>
+  );
 }
 
 const mapStateToProps = state => {
@@ -31,5 +52,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchSmurfs, addSmurf }
+  { fetchSmurfs, addSmurf, deleteSmurf, updateSmurf }
 )(App);

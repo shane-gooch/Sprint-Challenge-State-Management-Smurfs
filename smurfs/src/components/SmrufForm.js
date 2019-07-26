@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "semantic-ui-css/semantic.min.css";
 import { Input, Button } from "semantic-ui-react";
@@ -22,9 +22,31 @@ export default function SmurfForm(props) {
       [e.target.name]: e.target.value
     });
   };
+  const addSmurf = (e, formData) => {
+    console.log(formData);
+    e.preventDefault();
+    props.addSmurf(e, formData);
+    setFormData(resetForm);
+  };
+  const sendUpdateSmurf = (e, formData) => {
+    e.preventDefault();
+    props.sendUpdateSmurf(formData);
+    setFormData(resetForm);
+  };
+
+  useEffect(() => {
+    setFormData(props.smurfToEdit);
+  }, [props.smurfToEdit]);
+
   return (
     <div className="smurfForm">
-      <form onSubmit={e => props.addSmurf(e, formData)}>
+      <form
+        onSubmit={
+          props.smurfToEdit
+            ? e => sendUpdateSmurf(e, formData)
+            : e => addSmurf(e, formData)
+        }
+      >
         <Input
           type="text"
           name="name"
@@ -49,7 +71,9 @@ export default function SmurfForm(props) {
           onChange={changeHandler}
           required
         />
-        <Button>Add Smurf</Button>
+        <Button color="blue">
+          {props.smurfToEdit ? "Update Smurf" : "Add Smurf"}
+        </Button>
       </form>
     </div>
   );
