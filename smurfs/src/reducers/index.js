@@ -7,7 +7,10 @@ import {
   ADD_SMURFS_FAIL,
   UPDATE_SMURFS_START,
   UPDATE_SMURFS_SUCCESS,
-  UPDATE_SMURFS_FAIL
+  UPDATE_SMURFS_FAIL,
+  DELETE_SMURFS_START,
+  DELETE_SMURFS_SUCCESS,
+  DELETE_SMURFS_FAIL
 } from "../actions";
 
 const inititalState = {
@@ -62,6 +65,20 @@ const reducer = (state = inititalState, action) => {
       return {
         ...state,
         error: "Unable to update smurf..."
+      };
+    case DELETE_SMURFS_START:
+      return {
+        ...state
+      };
+    case DELETE_SMURFS_SUCCESS:
+      return {
+        ...state,
+        smurfs: action.payload
+      };
+    case DELETE_SMURFS_FAIL:
+      return {
+        ...state,
+        error: "Unable to delete smurf..."
       };
     default:
       return state;
