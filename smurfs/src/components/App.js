@@ -1,16 +1,56 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
+
 import "./App.css";
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <h1>SMURFS! 2.0 W/ Redux</h1>
-        <div>Welcome to your state management version of Smurfs!</div>
-        <div>Start inside of your `src/index.js` file!</div>
-        <div>Have fun!</div>
-      </div>
-    );
-  }
+import "semantic-ui-css/semantic.min.css";
+import { Header, Icon } from "semantic-ui-react";
+
+import SmurfList from "./SmurfLlst";
+import SmurfForm from "./SmrufForm";
+
+import { fetchSmurfs, addSmurf, deleteSmurf, updateSmurf } from "../actions";
+import { connect } from "react-redux";
+
+function App({ fetchSmurfs, addSmurf, deleteSmurf, smurfs, updateSmurf }) {
+  const [smurfToEdit, setSmurfToEdit] = useState("");
+  const editSmurf = updatedSmurf => {
+    setSmurfToEdit(updatedSmurf);
+  };
+
+  const sendUpdateSmurf = smurf => {
+    updateSmurf(smurf.id, smurf);
+    setSmurfToEdit("");
+  };
+  return (
+    <div className="App">
+      <Header as="h1" icon textAlign="center">
+        <Icon name="angle double down" circular />
+        <Header.Content>Smurf List</Header.Content>
+      </Header>
+      <SmurfForm
+        addSmurf={addSmurf}
+        smurfToEdit={smurfToEdit}
+        sendUpdateSmurf={sendUpdateSmurf}
+      />
+      <SmurfList
+        fetchSmurfs={fetchSmurfs}
+        deleteSmurf={deleteSmurf}
+        smurfs={smurfs}
+        editSmurf={editSmurf}
+      />
+    </div>
+  );
 }
 
-export default App;
+const mapStateToProps = state => {
+  console.log(state);
+  return {
+    isLoading: state.isLoading,
+    error: state.error,
+    smurfs: state.smurfs
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { fetchSmurfs, addSmurf, deleteSmurf, updateSmurf }
+)(App);
